@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Admin Gate | John Francis A. Flores</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            950: '#04060c',
+                            900: '#070a14',
+                            850: '#0b1021',
+                            800: '#10172e',
+                            700: '#182245',
+                            600: '#233266'
+                        },
+                        neon: {
+                            cyan: '#00f0ff',
+                            purple: '#a855f7',
+                            emerald: '#10b981',
+                            amber: '#f59e0b',
+                            rose: '#f43f5e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #04060c;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+
+        .font-mono-custom {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass-panel {
+            background: rgba(11, 16, 33, 0.78);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+        }
+
+        .glow-border-purple {
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.15);
+        }
+
+        .tech-grid-bg {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+
+        .ambient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.18;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #04060c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #182245;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative flex flex-col selection:bg-cyan-400 selection:text-black">
+
+    <!-- Tech Grid & Ambient Glows -->
+    <div class="fixed inset-0 tech-grid-bg pointer-events-none z-0"></div>
+    <div class="ambient-orb w-[600px] h-[600px] bg-purple-600 top-[-100px] left-[10%]"></div>
+    <div class="ambient-orb w-[600px] h-[600px] bg-cyan-500 bottom-[-100px] right-[10%]"></div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Navigation Header -->
+    <header class="relative z-20 glass-panel border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-3.5">
+            <a href="index.html" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-purple-600 flex items-center justify-center font-extrabold text-cyber-950 shadow-lg shadow-cyan-400/25 hover:scale-105 transition-transform" title="Back to Public Site">
+                <span class="font-mono-custom text-base tracking-tighter">JF</span>
+            </a>
+            <div>
+                <h1 class="font-bold text-sm sm:text-base tracking-tight text-white flex items-center gap-2">
+                    Owner Admin Gate
+                    <span class="px-2 py-0.5 text-[10px] font-mono-custom font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/30 rounded-full">
+                        RESTRICTED
+                    </span>
+                </h1>
+                <p class="text-xs text-slate-400 font-mono-custom">
+                    John Francis A. Flores • Control Center
+                </p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-cyber-850 hover:bg-cyber-800 text-slate-300 hover:text-white border border-white/10 flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-arrow-left"></i> <span>Public Site</span>
+            </a>
+            <!-- Sign out button (visible only when authenticated) -->
+            <button onclick="handleLogout()" id="navLogoutBtn" class="hidden px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center gap-2 transition-all">
+                <i class="fa-solid fa-right-from-bracket"></i> <span>Sign Out</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 flex flex-col justify-center">
+
+        <!-- ============================================================= -->
+        <!-- STATE 1: CLIENT-SIDE LOGIN GATE (Shown if not logged in) -->
+        <!-- ============================================================= -->
+        <div id="loginGateSection" class="w-full max-w-md mx-auto my-auto space-y-6">
+            
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 border glow-border-purple space-y-6 relative overflow-hidden">
+                <div class="absolute -top-16 -right-16 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+                <!-- Gate Icon & Title -->
+                <div class="text-center space-y-2">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-cyan-400/20 border border-purple-500/40 text-purple-400 flex items-center justify-center mx-auto text-2xl shadow-xl shadow-purple-500/20">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white tracking-tight">Owner Verification</h2>
+                    <p class="text-xs text-slate-400 font-mono-custom">
+                        Enter authorized email & PIN to manage portfolio data
+                    </p>
+                </div>
+
+                <!-- Login Form -->
+                <form id="adminLoginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                    
+                    <!-- Email Field -->
+                    <div>
+                        <label class="block text-xs font-mono-custom text-slate-300 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-envelope text-purple-400"></i> Authorized Email Address
+                        </label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            required 
+                            autocomplete="email" 
+                            placeholder="johnfrancis.flores22@gmail.com" 
+                            class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 transition-all font-mono-custom"
+                        >
+                    </div>
+
+                    <!-- PIN / Password Field -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-mono-custom text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-key text-cyan-400"></i> Security PIN / Passcode
+                            </label>
+                            <span class="text-[10px] font-mono-custom text-slate-500">Default: 1234</span>
+                        </div>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="loginPin" 
+                                required 
+                                placeholder="Enter Security PIN" 
+                                class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all font-mono-custom"
+                            >
+                            <button 
+                                type="button" 
+                                onclick="togglePinVisibility()" 
+                                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
+                                title="Show/Hide PIN"
+                            >
+                                <i class="fa-regular fa-eye" id="pinEyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Error Alert Message -->
+                    <div id="loginErrorAlert" class="hidden p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono-custom flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation shrink-0"></i>
+                        <span id="loginErrorText">Access denied: Unauthorized credentials.</span>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-400 hover:from-purple-400 hover:to-cyan-300 text-cyber-950 font-bold text-sm tracking-wide shadow-lg shadow-purple-500/25 active:scale-95 transition-all flex items-center justify-center gap-2"
+                    >
+                        <i class="fa-solid fa-lock-open"></i> Authenticate & Enter
+                    </button>
+                </form>
+
+                <!-- Gate Information Note -->
+                <div class="p-3 rounded-xl bg-cyber-900/60 border border-white/5 text-[11px] font-mono-custom text-slate-400 space-y-1 text-center">
+                    <p><i class="fa-solid fa-shield-cat text-cyan-400 mr-1"></i> Client-Side Session Gate</p>
+                    <p class="text-slate-500 text-[10px]">Session persists in your current browser tab until you close it.</p>
+                </div>
+            </div>
+
+            <!-- Back Link -->
+            <div class="text-center">
+                <a href="index.html" class="text-xs font-mono-custom text-slate-500 hover:text-cyan-400 transition-colors">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Return to Public Portfolio View
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- ============================================================= -->
+        <!-- STATE 2: AUTHENTICATED OWNER ADMIN DASHBOARD -->
+        <!-- ============================================================= -->
+        <div id="adminDashboardView" class="hidden space-y-8">
+
+            <!-- Admin Authentication Banner & Global Actions -->
+            <div class="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 glow-border-purple">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-cyan-400 flex items-center justify-center text-cyber-950 font-black text-xl shadow-lg shadow-purple-500/30">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h2 class="text-xl sm:text-2xl font-black text-white">Owner Control Center</h2>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono-custom bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-check"></i> AUTHENTICATED
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1 font-mono-custom">
+                            Active session as: <span id="authEmailDisplay" class="text-cyan-400 font-bold">johnfrancis.flores22@gmail.com</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <a href="index.html" class="px-3.5 py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-cyber-950 text-xs font-bold flex items-center gap-1.5 transition-all">
+                        <i class="fa-solid fa-eye"></i> View Public Site
+                    </a>
+                    <button onclick="resetDataToDefault()" class="px-3.5 py-2 rounded-xl bg-cyber-850 hover:bg-cyber-800 border border-white/10 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-rotate-right"></i> Reset Defaults
+                    </button>
+                    <button onclick="exportDataJSON()" class="px-3.5 py-2 rounded-xl bg-cyber-850 hover:bg-cyber-800 border border-white/10 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-download"></i> Backup JSON
+                    </button>
+                    <button onclick="triggerJSONImport()" class="px-3.5 py-2 rounded-xl bg-cyber-850 hover:bg-cyber-800 border border-white/10 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-upload"></i> Restore JSON
+                    </button>
+                    <button onclick="handleLogout()" class="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-medium flex items-center gap-1.5 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    </button>
+                    <input type="file" id="importJsonFileInput" accept=".json" class="hidden" onchange="handleJSONFileImport(event)">
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex border-b border-white/10 gap-2 font-mono-custom text-sm">
+                <button onclick="switchAdminTab('inbox')" id="btnTabInbox" class="px-5 py-3 font-semibold border-b-2 border-cyan-400 text-cyan-400 flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-inbox"></i> Visitor Inquiries <span id="inboxTabBadge" class="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-400 text-xs font-bold">0</span>
+                </button>
+                <button onclick="switchAdminTab('editor')" id="btnTabEditor" class="px-5 py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Portfolio Content
+                </button>
+                <button onclick="switchAdminTab('projects')" id="btnTabProjects" class="px-5 py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-cubes"></i> Manage Projects
+                </button>
+            </div>
+
+            <!-- TAB 1: VISITOR INBOX MANAGER -->
+            <div id="adminTabInbox" class="space-y-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-envelope-open-text text-cyan-400"></i> Incoming Messages
+                        </h3>
+                        <p class="text-xs text-slate-400 font-mono-custom">Messages submitted by visitors via public portfolio form</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="markAllMessagesRead()" class="px-3.5 py-1.5 rounded-xl bg-cyber-850 hover:bg-cyber-800 text-xs text-slate-300 font-medium transition-colors border border-white/10">
+                            Mark All Read
+                        </button>
+                        <button onclick="clearAllMessages()" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-xs text-rose-400 border border-rose-500/30 font-medium transition-colors">
+                            Clear Inbox
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3" id="adminMessagesList">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- TAB 2: PORTFOLIO CONTENT EDITOR -->
+            <div id="adminTabEditor" class="hidden space-y-8">
+                
+                <form id="contentEditorForm" onsubmit="savePortfolioContent(event)" class="space-y-8">
+                    
+                    <!-- General Profile Info -->
+                    <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
+                            <i class="fa-solid fa-user text-cyan-400"></i> General Profile Information
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">Full Name</label>
+                                <input type="text" id="editFullName" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">Primary Badge Title</label>
+                                <input type="text" id="editProfileBadge" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">Location</label>
+                                <input type="text" id="editLocation" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">Email Address</label>
+                                <input type="email" id="editEmail" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">Phone Number</label>
+                                <input type="text" id="editPhone" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-mono-custom text-slate-300 mb-1">Main Bio Description</label>
+                            <textarea id="editMainBio" rows="3" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2 border-b border-white/10 pb-3">
+                            <i class="fa-solid fa-share-nodes text-purple-400"></i> Social & Public Links
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">LinkedIn URL</label>
+                                <input type="url" id="editLinkedin" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">GitHub URL</label>
+                                <input type="url" id="editGithub" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono-custom text-slate-300 mb-1">Facebook URL</label>
+                                <input type="url" id="editFacebook" class="w-full bg-cyber-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:border-cyan-400 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Core Skills Editor -->
+                    <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-microchip text-cyan-400"></i> Core Technical Specializations
+                            </h3>
+                            <button type="button" onclick="addSkillRow()" class="px-3 py-1.5 bg-cyan-400/20 text-cyan-400 text-xs font-semibold rounded-lg hover:bg-cyan-400/30 transition-colors">
+                                <i class="fa-solid fa-plus"></i> Add Skill
+                            </button>
+                        </div>
+                        <div id="skillsEditorContainer" class="space-y-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Experience & Achievements Editor -->
+                    <div class="glass-panel rounded-2xl p-6 sm:p-8 space-y-6">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-award text-purple-400"></i> Experience & Achievements
+                            </h3>
+                            <button type="button" onclick="addExperienceRow()" class="px-3 py-1.5 bg-purple-500/20 text-purple-400 text-xs font-semibold rounded-lg hover:bg-purple-500/30 transition-colors">
+                                <i class="fa-solid fa-plus"></i> Add Experience
+                            </button>
+                        </div>
+                        <div id="experienceEditorContainer" class="space-y-4">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Save Changes Floating Dock -->
+                    <div class="sticky bottom-4 z-40 glass-panel rounded-2xl p-4 flex items-center justify-between border border-cyan-400/40 shadow-2xl">
+                        <p id="editorSaveStatus" class="text-xs font-mono-custom text-emerald-400 hidden flex items-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> Changes saved successfully!
+                        </p>
+                        <button type="submit" class="ml-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-600 text-cyber-950 font-bold text-sm hover:opacity-95 transition-all shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> Save All Changes
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- TAB 3: PROJECTS MANAGER -->
+            <div id="adminTabProjects" class="hidden space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Project Showcase Manager</h3>
+                        <p class="text-xs text-slate-400 font-mono-custom">Manage engineering builds shown on public portfolio</p>
+                    </div>
+                    <button onclick="addNewProjectPrompt()" class="px-3.5 py-2 rounded-xl bg-cyan-400 text-cyber-950 font-bold text-xs flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Add Project
+                    </button>
+                </div>
+
+                <div id="adminProjectsList" class="space-y-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Application Script -->
+    <script>
+        /* -------------------------------------------------------------
+           AUTHENTICATION CREDENTIALS & CONSTANTS
+        ------------------------------------------------------------- */
+        const AUTHORIZED_EMAIL = "johnfrancis.flores22@gmail.com";
+        const AUTHORIZED_PINS = ["1234", "admin2026", "flores"];
+        const SESSION_AUTH_KEY = "jf_admin_auth";
+        const SESSION_USER_KEY = "jf_admin_user";
+
+        /* -------------------------------------------------------------
+           DEFAULT PORTFOLIO CONFIGURATION DATA
+        ------------------------------------------------------------- */
+        const DEFAULT_PORTFOLIO_DATA = {
+            profile: {
+                fullName: "John Francis A. Flores",
+                profileBadge: "Tech Support • CpE Graduate '26",
+                location: "Tabi, Boac, Marinduque, Philippines",
+                email: "johnfrancis.flores22@gmail.com",
+                phone: "+63 966 319 3600",
+                mainBio: "Company Tech Support at CHL Distributions & IT Solutions. Computer Engineering graduate from Marinduque State University specializing in robust CCTV networking, custom desktop assembly, and automated software installations."
+            },
+            socials: [
+                { name: "LinkedIn", icon: "fa-brands fa-linkedin", url: "https://linkedin.com/in/yourprofile", color: "text-cyan-400", border: "hover:border-cyan-400/50" },
+                { name: "GitHub", icon: "fa-brands fa-github", url: "https://github.com/yourusername", color: "text-purple-400", border: "hover:border-purple-400/50" },
+                { name: "Facebook", icon: "fa-brands fa-facebook", url: "https://facebook.com/yourprofile", color: "text-blue-400", border: "hover:border-blue-400/50" }
+            ],
+            skills: [
+                {
+                    title: "CCTV Networking & System Installation",
+                    desc: "End-to-end IP/Analog camera setup, structured cabling, NVR/DVR configuration, and remote monitoring integration.",
+                    icon: "fa-solid fa-video",
+                    level: 95
+                },
+                {
+                    title: "Desktop Support & Software Troubleshooting",
+                    desc: "Advanced OS deployment, desktop application tool installation, driver management, and system diagnostics.",
+                    icon: "fa-solid fa-screwdriver-wrench",
+                    level: 92
+                },
+                {
+                    title: "Custom Desktop Computer Building",
+                    desc: "Hardware component selection, professional assembling, rigorous stress testing, and ready-to-use deployment.",
+                    icon: "fa-solid fa-computer",
+                    level: 96
+                }
+            ],
+            experience: [
+                {
+                    title: "Engineering Intern (Robotics Innovation)",
+                    org: "TNC Group of Companies (Quezon City)",
+                    badge: "Awarded 'Best Intern'",
+                    desc: "Integrated low-voltage circuits and firmware for the TNC Camera Auto Tracker project.",
+                    icon: "fa-solid fa-robot"
+                },
+                {
+                    title: "3rd Placer, ICPEP Region 4B CpE Challenge 2024",
+                    org: "Regional CpE Competition",
+                    badge: "Robothon & Innovation Pitch",
+                    desc: "Competed and secured 3rd place in regional engineering innovations and robotics pitch.",
+                    icon: "fa-solid fa-medal"
+                },
+                {
+                    title: "Best Thesis Award: 'Smart Harvest'",
+                    org: "Marinduque State University",
+                    badge: "Integrated Electronics & AI",
+                    desc: "Developed an award-winning smart agricultural harvesting system merging IoT, embedded electronics, and AI.",
+                    icon: "fa-solid fa-graduation-cap"
+                },
+                {
+                    title: "Executive Secretary on Planning & Development",
+                    org: "Supreme Student Council (MarSU)",
+                    badge: "Student Leadership",
+                    desc: "Spearheaded strategic planning, institutional development programs, and student governance.",
+                    icon: "fa-solid fa-users-rectangle"
+                },
+                {
+                    title: "Sangguniang Kabataan Councilor",
+                    org: "Brgy. Tabi, Boac, Marinduque",
+                    badge: "Public Service",
+                    desc: "Elected public servant initiating youth development, community projects, and digital literacy initiatives.",
+                    icon: "fa-solid fa-landmark"
+                }
+            ],
+            projects: [
+                {
+                    id: 1,
+                    category: "robotics",
+                    categoryLabel: "Robotics & IoT",
+                    title: "TNC Camera Auto Tracker",
+                    subtitle: "Robotics Auto-Tracking Firmware & Low-Voltage Integration",
+                    tools: "Embedded C/C++, Sensors, Motor Controllers, PCB Soldering",
+                    milestone: "Awarded 'Best Intern' at TNC Group",
+                    desc: "Designed and implemented automated camera pan-tilt-zoom tracking algorithms using low-voltage sensor feedback and micro-controllers.",
+                    outcome: "Successfully integrated with company monitoring stations with ultra-low latency positioning.",
+                    icon: "fa-solid fa-robot"
+                },
+                {
+                    id: 2,
+                    category: "robotics",
+                    categoryLabel: "Robotics & IoT",
+                    title: "Smart Harvest: AI Agricultural Harvester",
+                    subtitle: "IoT & Smart Electronics Automation",
+                    tools: "ESP32, Computer Vision Sensors, Micro-actuators, IoT Cloud",
+                    milestone: "MarSU Best Thesis Award 2025-2026",
+                    desc: "Engineered an autonomous harvest detection and handling prototype integrating optical maturity sensors and micro-controllers.",
+                    outcome: "Reduced fruit damage rates by 40% and demonstrated smart agricultural transformation for local farmers.",
+                    icon: "fa-solid fa-seedling"
+                },
+                {
+                    id: 3,
+                    category: "networking",
+                    categoryLabel: "Networking",
+                    title: "Commercial Multi-Site CCTV & NVR Mesh",
+                    subtitle: "IP Camera Topology & Network Video Recording",
+                    tools: "Cat6 Cabling, PoE Switches, Hikvision NVRs, RTSP Streams, VLANs",
+                    milestone: "Deployed at Commercial Establishments",
+                    desc: "Architected end-to-end IP video surveillance networks across commercial spaces with segregated security VLANs.",
+                    outcome: "Achieved 99.9% uptime with 30-day continuous redundant retention and multi-user remote mobile viewing.",
+                    icon: "fa-solid fa-video"
+                }
+            ]
+        };
+
+        const DEFAULT_MESSAGES = [
+            {
+                id: 1,
+                name: "Engr. Mark Santos",
+                email: "mark.santos@techcorp.ph",
+                message: "Hello John! We are looking for an expert in CCTV networking and hardware deployment for our upcoming commercial project in Marinduque. Let's connect.",
+                date: "2026-06-12 14:30",
+                read: false
+            }
+        ];
+
+        /* -------------------------------------------------------------
+           SESSION STORAGE & AUTH GATE LOGIC
+        ------------------------------------------------------------- */
+        function checkAuthStatus() {
+            const isAuth = sessionStorage.getItem(SESSION_AUTH_KEY) === "true";
+            const userEmail = sessionStorage.getItem(SESSION_USER_KEY);
+
+            const loginGate = document.getElementById('loginGateSection');
+            const dashboardView = document.getElementById('adminDashboardView');
+            const navLogoutBtn = document.getElementById('navLogoutBtn');
+            const authEmailDisplay = document.getElementById('authEmailDisplay');
+
+            if (isAuth && userEmail === AUTHORIZED_EMAIL) {
+                // User is authenticated for this session
+                loginGate.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                navLogoutBtn.classList.remove('hidden');
+                if (authEmailDisplay) authEmailDisplay.innerText = userEmail;
+                renderAdminDashboard();
+            } else {
+                // Not authenticated
+                loginGate.classList.remove('hidden');
+                dashboardView.classList.add('hidden');
+                navLogoutBtn.classList.add('hidden');
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPin').value = '';
+            }
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const pinInput = document.getElementById('loginPin').value.trim();
+            const alertBox = document.getElementById('loginErrorAlert');
+            const alertText = document.getElementById('loginErrorText');
+
+            // Strictly check email
+            if (emailInput !== AUTHORIZED_EMAIL.toLowerCase()) {
+                alertText.innerText = `Access denied: Only ${AUTHORIZED_EMAIL} is authorized to access owner settings.`;
+                alertBox.classList.remove('hidden');
+                return;
+            }
+
+            // Verify PIN
+            if (!AUTHORIZED_PINS.includes(pinInput)) {
+                alertText.innerText = "Invalid Security PIN. Please try again or use the default PIN (1234).";
+                alertBox.classList.remove('hidden');
+                return;
+            }
+
+            // Authentication Successful
+            alertBox.classList.add('hidden');
+            sessionStorage.setItem(SESSION_AUTH_KEY, "true");
+            sessionStorage.setItem(SESSION_USER_KEY, AUTHORIZED_EMAIL);
+            
+            showToast("Authenticated successfully!", "success");
+            checkAuthStatus();
+        }
+
+        function handleLogout() {
+            sessionStorage.removeItem(SESSION_AUTH_KEY);
+            sessionStorage.removeItem(SESSION_USER_KEY);
+            showToast("Signed out of session", "info");
+            checkAuthStatus();
+        }
+
+        function togglePinVisibility() {
+            const pinInput = document.getElementById('loginPin');
+            const eyeIcon = document.getElementById('pinEyeIcon');
+            if (pinInput.type === "password") {
+                pinInput.type = "text";
+                eyeIcon.className = "fa-solid fa-eye-slash";
+            } else {
+                pinInput.type = "password";
+                eyeIcon.className = "fa-regular fa-eye";
+            }
+        }
+
+        /* -------------------------------------------------------------
+           SHARED LOCALSTORAGE HELPERS
+        ------------------------------------------------------------- */
+        function getStoredData() {
+            const data = localStorage.getItem('jf_portfolio_data');
+            if (!data) return DEFAULT_PORTFOLIO_DATA;
+            try {
+                return JSON.parse(data);
+            } catch(e) {
+                return DEFAULT_PORTFOLIO_DATA;
+            }
+        }
+
+        function saveStoredData(data) {
+            localStorage.setItem('jf_portfolio_data', JSON.stringify(data));
+        }
+
+        function getStoredMessages() {
+            const msgs = localStorage.getItem('jf_portfolio_messages');
+            return msgs ? JSON.parse(msgs) : DEFAULT_MESSAGES;
+        }
+
+        function saveStoredMessages(msgs) {
+            localStorage.setItem('jf_portfolio_messages', JSON.stringify(msgs));
+        }
+
+        /* -------------------------------------------------------------
+           ADMIN DASHBOARD RENDERING & ACTIONS
+        ------------------------------------------------------------- */
+        function renderAdminDashboard() {
+            const data = getStoredData();
+            const p = data.profile;
+
+            document.getElementById('editFullName').value = p.fullName;
+            document.getElementById('editProfileBadge').value = p.profileBadge;
+            document.getElementById('editLocation').value = p.location;
+            document.getElementById('editEmail').value = p.email;
+            document.getElementById('editPhone').value = p.phone;
+            document.getElementById('editMainBio').value = p.mainBio;
+
+            document.getElementById('editLinkedin').value = data.socials[0]?.url || '';
+            document.getElementById('editGithub').value = data.socials[1]?.url || '';
+            document.getElementById('editFacebook').value = data.socials[2]?.url || '';
+
+            // Skills editor
+            const skillsEd = document.getElementById('skillsEditorContainer');
+            skillsEd.innerHTML = data.skills.map((sk, idx) => `
+                <div class="p-4 rounded-xl bg-cyber-950 border border-white/10 space-y-3 relative group">
+                    <button type="button" onclick="removeSkillRow(${idx})" class="absolute top-3 right-3 text-rose-400 hover:text-rose-300 text-xs px-2.5 py-1 rounded bg-rose-500/10 border border-rose-500/20"><i class="fa-solid fa-trash"></i> Remove</button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pr-24">
+                        <div>
+                            <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">Skill Title</label>
+                            <input type="text" value="${escapeHtml(sk.title)}" data-skill-title="${idx}" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white focus:border-cyan-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">FontAwesome Icon</label>
+                            <input type="text" value="${escapeHtml(sk.icon)}" data-skill-icon="${idx}" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white focus:border-cyan-400">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">Description</label>
+                        <textarea data-skill-desc="${idx}" rows="2" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white focus:border-cyan-400">${escapeHtml(sk.desc)}</textarea>
+                    </div>
+                </div>
+            `).join('');
+
+            // Experience editor
+            const expEd = document.getElementById('experienceEditorContainer');
+            expEd.innerHTML = data.experience.map((ex, idx) => `
+                <div class="p-4 rounded-xl bg-cyber-950 border border-white/10 space-y-3 relative">
+                    <button type="button" onclick="removeExperienceRow(${idx})" class="absolute top-3 right-3 text-rose-400 hover:text-rose-300 text-xs px-2.5 py-1 rounded bg-rose-500/10 border border-rose-500/20"><i class="fa-solid fa-trash"></i> Remove</button>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pr-24">
+                        <div>
+                            <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">Title / Milestone</label>
+                            <input type="text" value="${escapeHtml(ex.title)}" data-exp-title="${idx}" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">Organization</label>
+                            <input type="text" value="${escapeHtml(ex.org)}" data-exp-org="${idx}" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">Badge Tag</label>
+                            <input type="text" value="${escapeHtml(ex.badge)}" data-exp-badge="${idx}" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <div class="sm:col-span-3">
+                            <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">Description</label>
+                            <input type="text" value="${escapeHtml(ex.desc)}" data-exp-desc="${idx}" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-mono-custom text-slate-400 mb-1">Icon Class</label>
+                            <input type="text" value="${escapeHtml(ex.icon)}" data-exp-icon="${idx}" class="w-full bg-cyber-900 border border-white/15 rounded-lg px-3 py-2 text-xs text-white">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            renderMessagesList();
+            renderAdminProjects();
+        }
+
+        function renderMessagesList() {
+            const msgs = getStoredMessages();
+            const container = document.getElementById('adminMessagesList');
+            const inboxBadge = document.getElementById('inboxTabBadge');
+            
+            const unreadCount = msgs.filter(m => !m.read).length;
+            inboxBadge.innerText = unreadCount;
+
+            if (msgs.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-panel rounded-2xl p-8 text-center text-slate-400 font-mono-custom">
+                        <i class="fa-solid fa-inbox text-3xl mb-2 text-slate-500"></i>
+                        <p>No visitor messages yet. Inquiries submitted on the public portfolio will appear here instantly.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = msgs.map((m) => `
+                <div class="glass-panel rounded-2xl p-5 border ${m.read ? 'border-white/5 opacity-80' : 'border-cyan-400/40 shadow-lg shadow-cyan-400/5'} flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="space-y-1.5 flex-grow">
+                        <div class="flex items-center gap-3">
+                            <span class="w-2.5 h-2.5 rounded-full ${m.read ? 'bg-slate-500' : 'bg-cyan-400 animate-pulse'}"></span>
+                            <h4 class="font-bold text-white text-base">${escapeHtml(m.name)}</h4>
+                            <span class="text-xs font-mono-custom text-cyan-400 bg-cyan-400/10 px-2 py-0.5 rounded border border-cyan-400/20">${escapeHtml(m.email)}</span>
+                            ${!m.read ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500 text-white font-mono-custom">NEW</span>' : ''}
+                        </div>
+                        <p class="text-sm text-slate-200 pl-5">${escapeHtml(m.message)}</p>
+                        <p class="text-[11px] font-mono-custom text-slate-400 pl-5"><i class="fa-regular fa-clock"></i> ${m.date}</p>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+                        <a href="mailto:${escapeHtml(m.email)}?subject=Re:%20Inquiry%20via%20Portfolio&body=Hi%20${encodeURIComponent(m.name)}," class="px-3 py-1.5 rounded-lg bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-400 text-xs font-medium border border-cyan-400/30">
+                            <i class="fa-solid fa-reply mr-1"></i> Reply
+                        </a>
+                        <button onclick="toggleMessageRead(${m.id})" class="px-3 py-1.5 rounded-lg bg-cyber-850 hover:bg-cyber-800 text-xs text-slate-300 font-medium transition-colors border border-white/10">
+                            ${m.read ? 'Mark Unread' : 'Mark Read'}
+                        </button>
+                        <button onclick="deleteMessage(${m.id})" class="px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-xs text-rose-400 border border-rose-500/20 font-medium transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchAdminTab(tab) {
+            const btnInbox = document.getElementById('btnTabInbox');
+            const btnEditor = document.getElementById('btnTabEditor');
+            const btnProjects = document.getElementById('btnTabProjects');
+            const tabInbox = document.getElementById('adminTabInbox');
+            const tabEditor = document.getElementById('adminTabEditor');
+            const tabProjects = document.getElementById('adminTabProjects');
+
+            [btnInbox, btnEditor, btnProjects].forEach(b => {
+                b.className = "px-5 py-3 font-medium border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 transition-all";
+            });
+            [tabInbox, tabEditor, tabProjects].forEach(t => t.classList.add('hidden'));
+
+            if (tab === 'inbox') {
+                btnInbox.className = "px-5 py-3 font-semibold border-b-2 border-cyan-400 text-cyan-400 flex items-center gap-2 transition-all";
+                tabInbox.classList.remove('hidden');
+                renderMessagesList();
+            } else if (tab === 'editor') {
+                btnEditor.className = "px-5 py-3 font-semibold border-b-2 border-purple-400 text-purple-400 flex items-center gap-2 transition-all";
+                tabEditor.classList.remove('hidden');
+                renderAdminDashboard();
+            } else if (tab === 'projects') {
+                btnProjects.className = "px-5 py-3 font-semibold border-b-2 border-cyan-400 text-cyan-400 flex items-center gap-2 transition-all";
+                tabProjects.classList.remove('hidden');
+                renderAdminProjects();
+            }
+        }
+
+        function renderAdminProjects() {
+            const data = getStoredData();
+            const container = document.getElementById('adminProjectsList');
+            const projects = data.projects || DEFAULT_PORTFOLIO_DATA.projects;
+
+            container.innerHTML = projects.map((p) => `
+                <div class="glass-panel rounded-2xl p-5 border border-white/10 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-cyan-400/10 text-cyan-400 flex items-center justify-center">
+                                <i class="${p.icon || 'fa-solid fa-cubes'}"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base">${p.title}</h4>
+                                <span class="text-xs font-mono-custom text-cyan-400">${p.categoryLabel || p.category}</span>
+                            </div>
+                        </div>
+                        <button onclick="removeProject(${p.id})" class="text-xs text-rose-400 hover:text-rose-300 px-3 py-1 rounded-lg bg-rose-500/10 border border-rose-500/20">
+                            <i class="fa-solid fa-trash"></i> Remove
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-300">${p.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function addNewProjectPrompt() {
+            const title = prompt("Enter Project Title:");
+            if (!title) return;
+            const subtitle = prompt("Enter Subtitle/Scope:") || "Engineering Build";
+            const desc = prompt("Enter Brief Description:") || "Hardware and systems implementation.";
+            const milestone = prompt("Enter Recognition / Milestone:") || "Completed Project";
+
+            const data = getStoredData();
+            if (!data.projects) data.projects = [...DEFAULT_PORTFOLIO_DATA.projects];
+
+            data.projects.push({
+                id: Date.now(),
+                category: "hardware",
+                categoryLabel: "Hardware & PC",
+                title,
+                subtitle,
+                tools: "Hardware Tools, Diagnostics",
+                milestone,
+                desc,
+                outcome: "Successfully deployed.",
+                icon: "fa-solid fa-microchip"
+            });
+
+            saveStoredData(data);
+            showToast("Project added!", "success");
+            renderAdminProjects();
+        }
+
+        function removeProject(id) {
+            if (confirm("Remove this project from your showcase?")) {
+                const data = getStoredData();
+                data.projects = (data.projects || DEFAULT_PORTFOLIO_DATA.projects).filter(p => p.id !== id);
+                saveStoredData(data);
+                showToast("Project removed", "info");
+                renderAdminProjects();
+            }
+        }
+
+        function savePortfolioContent(e) {
+            e.preventDefault();
+            const data = getStoredData();
+
+            data.profile.fullName = document.getElementById('editFullName').value;
+            data.profile.profileBadge = document.getElementById('editProfileBadge').value;
+            data.profile.location = document.getElementById('editLocation').value;
+            data.profile.email = document.getElementById('editEmail').value;
+            data.profile.phone = document.getElementById('editPhone').value;
+            data.profile.mainBio = document.getElementById('editMainBio').value;
+
+            if (data.socials[0]) data.socials[0].url = document.getElementById('editLinkedin').value;
+            if (data.socials[1]) data.socials[1].url = document.getElementById('editGithub').value;
+            if (data.socials[2]) data.socials[2].url = document.getElementById('editFacebook').value;
+
+            // Collect Skills
+            data.skills = [];
+            document.querySelectorAll('[data-skill-title]').forEach((el) => {
+                const idx = el.getAttribute('data-skill-title');
+                data.skills.push({
+                    title: el.value,
+                    icon: document.querySelector(`[data-skill-icon="${idx}"]`).value,
+                    desc: document.querySelector(`[data-skill-desc="${idx}"]`).value,
+                    level: 95
+                });
+            });
+
+            // Collect Experience
+            data.experience = [];
+            document.querySelectorAll('[data-exp-title]').forEach((el) => {
+                const idx = el.getAttribute('data-exp-title');
+                data.experience.push({
+                    title: el.value,
+                    org: document.querySelector(`[data-exp-org="${idx}"]`).value,
+                    badge: document.querySelector(`[data-exp-badge="${idx}"]`).value,
+                    desc: document.querySelector(`[data-exp-desc="${idx}"]`).value,
+                    icon: document.querySelector(`[data-exp-icon="${idx}"]`).value
+                });
+            });
+
+            saveStoredData(data);
+            showToast("All changes saved!", "success");
+
+            const saveStatus = document.getElementById('editorSaveStatus');
+            saveStatus.classList.remove('hidden');
+            setTimeout(() => saveStatus.classList.add('hidden'), 4000);
+        }
+
+        function addSkillRow() {
+            const data = getStoredData();
+            data.skills.push({ title: "New Skill", desc: "Detailed description of tool or technology", icon: "fa-solid fa-microchip", level: 90 });
+            saveStoredData(data);
+            renderAdminDashboard();
+        }
+
+        function removeSkillRow(idx) {
+            const data = getStoredData();
+            data.skills.splice(idx, 1);
+            saveStoredData(data);
+            renderAdminDashboard();
+        }
+
+        function addExperienceRow() {
+            const data = getStoredData();
+            data.experience.push({ title: "New Milestone", org: "Organization / Company", badge: "Achievement", desc: "Key contribution or project details", icon: "fa-solid fa-award" });
+            saveStoredData(data);
+            renderAdminDashboard();
+        }
+
+        function removeExperienceRow(idx) {
+            const data = getStoredData();
+            data.experience.splice(idx, 1);
+            saveStoredData(data);
+            renderAdminDashboard();
+        }
+
+        function toggleMessageRead(id) {
+            const msgs = getStoredMessages();
+            const m = msgs.find(x => x.id === id);
+            if (m) {
+                m.read = !m.read;
+                saveStoredMessages(msgs);
+                renderMessagesList();
+            }
+        }
+
+        function deleteMessage(id) {
+            let msgs = getStoredMessages();
+            msgs = msgs.filter(x => x.id !== id);
+            saveStoredMessages(msgs);
+            renderMessagesList();
+            showToast("Message deleted", "info");
+        }
+
+        function markAllMessagesRead() {
+            const msgs = getStoredMessages();
+            msgs.forEach(m => m.read = true);
+            saveStoredMessages(msgs);
+            renderMessagesList();
+            showToast("All messages marked as read", "success");
+        }
+
+        function clearAllMessages() {
+            if (confirm("Are you sure you want to clear all messages from your inbox?")) {
+                saveStoredMessages([]);
+                renderMessagesList();
+                showToast("Inbox cleared", "info");
+            }
+        }
+
+        function resetDataToDefault() {
+            if (confirm("Reset all portfolio content and settings back to original defaults?")) {
+                localStorage.removeItem('jf_portfolio_data');
+                renderAdminDashboard();
+                showToast("Portfolio reset to defaults", "info");
+            }
+        }
+
+        function exportDataJSON() {
+            const data = getStoredData();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "john_francis_flores_portfolio.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+            showToast("Configuration JSON exported", "success");
+        }
+
+        function triggerJSONImport() {
+            document.getElementById('importJsonFileInput').click();
+        }
+
+        function handleJSONFileImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                try {
+                    const parsed = JSON.parse(evt.target.result);
+                    if (parsed.profile && parsed.skills) {
+                        saveStoredData(parsed);
+                        renderAdminDashboard();
+                        showToast("Configuration restored successfully!", "success");
+                    } else {
+                        showToast("Invalid JSON file schema", "error");
+                    }
+                } catch(err) {
+                    showToast("Error parsing JSON file", "error");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let iconClass = 'fa-solid fa-circle-check text-emerald-400';
+            let borderClass = 'border-emerald-400/30';
+            if (type === 'info') {
+                iconClass = 'fa-solid fa-circle-info text-cyan-400';
+                borderClass = 'border-cyan-400/30';
+            } else if (type === 'error') {
+                iconClass = 'fa-solid fa-circle-exclamation text-rose-400';
+                borderClass = 'border-rose-400/30';
+            }
+
+            toast.className = `glass-panel px-4 py-3 rounded-xl border ${borderClass} shadow-2xl flex items-center gap-3 text-xs font-mono-custom text-white pointer-events-auto`;
+            toast.innerHTML = `
+                <i class="${iconClass} text-sm"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3200);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        /* -------------------------------------------------------------
+           INITIALIZE ON LOAD
+        ------------------------------------------------------------- */
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+        });
+    </script>
+</body>
+</html>

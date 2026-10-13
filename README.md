@@ -78,10 +78,14 @@ Then turn on GitHub Pages in repository **Settings -> Pages**.
 
 ---
 
-## 🔑 Owner Admin Credentials
-- **Access URL**: Click the **Owner Admin** button in the header.
-- **Default PIN**: `1234` (also accepts `admin2026`).
-- **Demo Access**: You can also click the **Demo Bypass** button in the authentication modal for instant access.
+## 🌐 Site Routes & Architecture
+- **Public Portfolio Route**: `https://koki2214.github.io/WhosKiko/` (`index.html`)
+  - 100% public, fast, no login required.
+- **Admin Control Center Route**: `https://koki2214.github.io/WhosKiko/admin.html` (`admin.html`)
+  - Protected by a lightweight client-side login gate.
+  - Restricted strictly to: `johnfrancis.flores22@gmail.com`.
+  - Default PIN: `1234` (or `admin2026`).
+  - Session state is securely saved in `sessionStorage` (stays authenticated until you close the browser tab).
 
 ---
 
